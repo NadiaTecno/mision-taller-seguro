@@ -1,0 +1,289 @@
+<!doctype html><html lang="es"><head><meta charset="utf-8"><title>Misión Taller Seguro</title><meta name="viewport" content="width=device-width,initial-scale=1"></head><body><title>Misión Taller Seguro</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bungee&family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&family=JetBrains+Mono:wght@500;700&display=swap">
+<style>
+/* Layout: a workshop pegboard — a hazard-taped header, then one "station" card at a time with a padlock panel beside the puzzle */
+:root{
+  --board:#e9e1cf;      /* pegboard/kraft */
+  --panel:#fbf8f1;
+  --ink:#1d2433;
+  --muted:#5b6170;
+  --line:#cfc4ab;
+  --hazard:#f2b705;     /* safety yellow */
+  --steel:#2f5d8a;      /* tool steel blue */
+  --ok:#1f7a45;
+  --bad:#b3261e;
+  --hole:rgba(29,36,51,.10);
+  --display:'Bungee', 'Arial Black', Impact, sans-serif;
+  --body:'Atkinson Hyperlegible', 'Century Gothic', Verdana, sans-serif;
+  --mono:'JetBrains Mono', ui-monospace, Consolas, monospace;
+  --lockbg:#1d2433; --lockfg:#fbf8f1; --lockok:#7ee2a3; --lockbad:#ffb4ab;
+  --fs:1rem;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --board:#1b1f27;--panel:#252a35;--ink:#eef0f4;--muted:#a9b0bf;--line:#3a4150;--hazard:#f5c22e;--steel:#7fb0e0;--ok:#5cc489;--bad:#ff8a80;--hole:rgba(255,255,255,.05);--lockbg:#0f1218;--lockfg:#eef0f4;--lockok:#7ee2a3;--lockbad:#ffb4ab;color-scheme:dark}}
+:root[data-theme="dark"]{--board:#1b1f27;--panel:#252a35;--ink:#eef0f4;--muted:#a9b0bf;--line:#3a4150;--hazard:#f5c22e;--steel:#7fb0e0;--ok:#5cc489;--bad:#ff8a80;--hole:rgba(255,255,255,.05);--lockbg:#0f1218;--lockfg:#eef0f4;--lockok:#7ee2a3;--lockbad:#ffb4ab;color-scheme:dark}
+html.hc{--board:#000;--panel:#000;--ink:#fff;--muted:#fff;--line:#fff;--hazard:#ffd400;--steel:#7cc7ff;--ok:#6dff9b;--bad:#ff7070;--hole:transparent;--lockbg:#000;--lockfg:#fff;--lockok:#6dff9b;--lockbad:#ff7070}
+*{box-sizing:border-box}
+body{background:var(--board);background-image:radial-gradient(var(--hole) 1.6px,transparent 1.8px);background-size:22px 22px;color:var(--ink);font-family:var(--body);font-size:calc(var(--fs) * 1.05);line-height:1.55;margin:0}
+.wrap{max-width:1040px;margin:0 auto;padding-left:max(16px, env(safe-area-inset-left, 0px));padding-right:max(16px, env(safe-area-inset-right, 0px));padding-block:18px 40px;display:flex;flex-direction:column;gap:18px}
+.tape{height:14px;border-radius:4px;background:repeating-linear-gradient(-45deg,var(--hazard) 0 16px,var(--ink) 16px 32px)}
+header.top{display:flex;flex-wrap:wrap;gap:12px 20px;align-items:end;justify-content:space-between}
+h1{font-family:var(--display);font-weight:400;font-size:clamp(1.9rem,5vw,3rem);line-height:1;margin:0;letter-spacing:.01em;text-wrap:balance}
+h1 small{display:block;font-family:var(--body);font-weight:700;font-size:.95rem;letter-spacing:.12em;text-transform:uppercase;color:var(--steel);margin-bottom:6px}
+.tools{display:flex;flex-wrap:wrap;gap:8px}
+button,.btn{font:inherit;font-weight:700;border:2px solid var(--ink);background:var(--panel);color:var(--ink);border-radius:10px;padding:.45em .9em;cursor:pointer;line-height:1.2}
+button:hover{background:var(--hazard);color:#1d2433}
+button:focus-visible,input:focus-visible,select:focus-visible{outline:3px solid var(--steel);outline-offset:2px}
+button[aria-pressed="true"]{background:var(--ink);color:var(--panel)}
+.progress{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.lock-dot{width:38px;height:38px;border-radius:50%;border:2px solid var(--ink);display:grid;place-items:center;font-family:var(--mono);font-weight:700;background:var(--panel)}
+.lock-dot.done{background:var(--ok);color:#fff;border-color:var(--ok)}
+.lock-dot.now{background:var(--hazard);color:#1d2433}
+.meta{font-family:var(--mono);font-size:.9rem;color:var(--muted)}
+.station{background:var(--panel);border:2px solid var(--ink);border-radius:16px;box-shadow:6px 6px 0 var(--ink);padding:clamp(16px,3vw,28px);display:grid;grid-template-columns:minmax(0,1.6fr) minmax(0,1fr);gap:24px}
+@media (max-width:760px){.station{grid-template-columns:1fr}}
+.station h2{font-family:var(--display);font-weight:400;font-size:clamp(1.3rem,3.2vw,1.8rem);margin:0 0 4px;line-height:1.1}
+.kicker{font-weight:700;letter-spacing:.12em;text-transform:uppercase;font-size:.8rem;color:var(--steel)}
+.story{border-left:5px solid var(--hazard);padding:.4em .9em;background:color-mix(in srgb,var(--hazard) 12%,transparent);border-radius:0 10px 10px 0;margin:10px 0}
+.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:10px;margin-top:10px}
+.card{border:2px solid var(--line);border-radius:12px;padding:10px 12px;background:var(--panel);display:flex;gap:10px;align-items:flex-start;cursor:pointer;text-align:left;font-weight:400}
+.card .tag{font-family:var(--mono);font-weight:700;background:var(--ink);color:var(--panel);border-radius:6px;padding:0 .45em;flex:none}
+.card[aria-pressed="true"]{border-color:var(--steel);background:color-mix(in srgb,var(--steel) 14%,var(--panel));color:var(--ink)}
+.card:hover{background:color-mix(in srgb,var(--hazard) 25%,var(--panel));color:var(--ink)}
+table.match{width:100%;border-collapse:collapse;margin-top:10px}
+table.match td{padding:8px 6px;border-bottom:1px solid var(--line);vertical-align:middle}
+select,input[type=text]{font:inherit;color:var(--ink);background:var(--panel);border:2px solid var(--ink);border-radius:8px;padding:.35em .5em;max-width:100%}
+.legend{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:6px;font-size:.95rem;margin-top:8px}
+.legend span{font-family:var(--mono);font-weight:700}
+.chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}
+.item{border:2px solid var(--line);border-radius:999px;padding:.35em .9em;background:var(--panel);font-weight:700}
+.item[data-cat="madera"]{background:#c98b4a;color:#1d2433;border-color:#8a5a2b}
+.item[data-cat="metal"]{background:#9aa6b2;color:#1d2433;border-color:#5b6670}
+.item[data-cat="plastico"]{background:#5bb5c9;color:#1d2433;border-color:#2b7a8a}
+.counts{display:flex;gap:10px;flex-wrap:wrap;margin-top:10px;font-family:var(--mono)}
+.counts div{border:2px dashed var(--line);border-radius:10px;padding:6px 10px}
+.phases{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:8px;margin-top:10px}
+.phase{border:2px solid var(--line);border-radius:10px;padding:8px 10px;background:var(--panel)}
+.phase b{font-family:var(--mono);font-size:1.15rem;color:var(--steel);margin-right:6px}
+.lockbox{background:var(--lockbg);color:var(--lockfg);border:2px solid var(--ink);border-radius:14px;padding:18px;display:flex;flex-direction:column;gap:12px;align-self:start}
+.lockbox h3{font-family:var(--display);font-weight:400;margin:0;font-size:1.2rem;color:var(--hazard)}
+.lockbox input{font-family:var(--mono);font-size:1.4rem;letter-spacing:.3em;text-transform:uppercase;width:100%;background:var(--panel);color:var(--ink);border-color:var(--hazard);text-align:center}
+.lockbox .row{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.lockbox .row input{flex:1 1 70px;width:auto;letter-spacing:.1em}
+.lockbox button{border-color:var(--hazard);background:var(--hazard);color:#1d2433}
+.lockbox button.ghost{background:transparent;color:var(--lockfg)}
+.lockbox button:disabled{opacity:.5;cursor:not-allowed}
+.msg{min-height:1.6em;font-weight:700}
+.msg.ok{color:var(--lockok)}.msg.bad{color:var(--lockbad)}
+.hint{background:transparent;color:var(--lockfg);border:1px dashed var(--hazard);border-radius:10px;padding:8px 10px;font-size:.95rem}
+.extra{margin-top:14px;border:2px dashed var(--steel);border-radius:12px;padding:10px 12px}
+.extra h4{margin:0 0 6px;color:var(--steel)}
+.extra .opts{display:flex;flex-wrap:wrap;gap:8px}
+.start{display:grid;grid-template-columns:minmax(0,1.3fr) minmax(0,1fr);gap:24px}
+@media (max-width:760px){.start{grid-template-columns:1fr}}
+.levels{display:grid;gap:10px}
+.level{text-align:left;padding:14px;border-radius:12px}
+.level strong{font-family:var(--display);font-weight:400;font-size:1.15rem;display:block}
+.final{text-align:left}
+.key{font-size:4rem;line-height:1}
+footer{font-size:.85rem;color:var(--muted);display:flex;flex-wrap:wrap;gap:6px 16px;justify-content:space-between}
+@media (prefers-reduced-motion:no-preference){.shake{animation:sh .35s}@keyframes sh{25%{transform:translateX(-6px)}75%{transform:translateX(6px)}}}
+</style>
+
+<div class="wrap">
+  <div class="tape" aria-hidden="true"></div>
+  <header class="top">
+    <h1><small>Breakout educativo · Tecnología 1.º ESO</small>Misión Taller Seguro</h1>
+    <div class="tools" role="toolbar" aria-label="Herramientas de accesibilidad">
+      <button id="bListen" type="button" title="Leer en voz alta el reto actual">🔊 Escuchar</button>
+      <button id="bMinus" type="button" aria-label="Reducir el tamaño del texto">A−</button>
+      <button id="bPlus" type="button" aria-label="Aumentar el tamaño del texto">A+</button>
+      <button id="bContrast" type="button" aria-pressed="false">Alto contraste</button>
+    </div>
+  </header>
+  <div class="progress" id="progress" aria-label="Candados abiertos"></div>
+  <main id="stage"></main>
+  <footer>
+    <span>Autora: Nadia Rodríguez Yeste · IES Alcarria Baja (Mondéjar) · Licencia CC BY-SA 4.0</span>
+    <span id="stats" class="meta"></span>
+  </footer>
+</div>
+
+<script>
+const S = { level: null, step: 0, hints: 0, fails: 0, extras: 0, t0: null, sel: {} };
+const KEY = 'mision-taller-seguro-v1';
+function save(){ try{ localStorage.setItem(KEY, JSON.stringify(S)); }catch(e){} }
+function load(){ try{ const d = JSON.parse(localStorage.getItem(KEY)||'null'); if(d) Object.assign(S, d); }catch(e){} }
+
+const RETOS = [
+  { id:'seguridad', kicker:'Candado 1 · Seguridad en el taller', title:'Las normas del profesor Tornillo',
+    story:'La puerta del taller tiene un candado de 3 letras. En el tablón hay seis normas, pero alguien ha colado tres trampas. Pulsa solo las normas que <b>sí</b> son correctas: sus letras, en orden alfabético, abren el candado.',
+    type:'cards', code:'BDF',
+    cards:[['A','Llevar el pelo suelto para estar más cómodo.'],['B','Usar gafas de protección al cortar, limar o taladrar.'],['C','Correr por el taller si se acaba el tiempo.'],['D','Sujetar la pieza con el tornillo de banco antes de cortarla.'],['E','Dejar las herramientas encima de cualquier mesa.'],['F','Desconectar la máquina antes de limpiarla o cambiar la broca.']],
+    hints:['Piensa en qué te protege a ti y a tus compañeros. Las tres trampas ponen en peligro a alguien.','Son correctas la norma de las gafas, la del tornillo de banco y la de desconectar la máquina.'],
+    extra:{q:'¿Qué protección usarías al lijar madera y levantar mucho polvo?', opts:['Guantes de cocina','Mascarilla','Gorra'], ok:1} },
+  { id:'herramientas', kicker:'Candado 2 · Herramientas', title:'Cada herramienta, en su sitio',
+    story:'El armario de herramientas se abre con un código de 4 cifras. Elige para qué sirve cada herramienta. Los números de las acciones, de arriba abajo, forman el código.',
+    type:'match', code:'3421',
+    tools:['Sierra de costilla','Lima','Martillo','Taladro'],
+    actions:['1 · Hacer agujeros','2 · Clavar puntas','3 · Cortar madera','4 · Alisar y desbastar','5 · Apretar tornillos','6 · Doblar alambre'],
+    hints:['La sierra corta y el taladro perfora. ¿Qué número tiene cada acción?','La lima sirve para alisar y desbastar (4) y el martillo para clavar (2).'],
+    extra:{q:'¿Qué herramienta usarías para sujetar y doblar un alambre?', opts:['Alicates','Serrucho','Escuadra'], ok:0} },
+  { id:'materiales', kicker:'Candado 3 · Materiales', title:'El almacén desordenado',
+    story:'Para salir del almacén necesitas un código de 3 cifras: cuántos objetos hay de <b>madera</b>, de <b>metal</b> y de <b>plástico</b>, en ese orden. Toca cada objeto para clasificarlo (cada toque cambia de material).',
+    type:'classify', code:'322',
+    items:['Palillo','Lata de refresco','Botella de agua','Tablero de contrachapado','Cable de cobre','Lápiz','Táper'],
+    hints:['El contrachapado es un tablero hecho de láminas de madera. El táper y la botella son de plástico.','Madera: palillo, tablero y lápiz. Metal: lata y cable.'],
+    extra:{q:'¿Por qué se usa el cobre en los cables eléctricos?', opts:['Porque es muy ligero','Porque conduce muy bien la electricidad','Porque es transparente'], ok:1} },
+  { id:'proceso', kicker:'Candado 4 · Proceso tecnológico', title:'El plan del proyecto',
+    story:'El ordenador del taller pide una contraseña de 6 letras: las fases del proceso tecnológico en el orden correcto.',
+    type:'phases', code:'IBDPCE',
+    phases:[['P','Planificar el trabajo y los materiales'],['D','Diseñar: bocetos y planos'],['E','Evaluar si funciona y mejorarlo'],['I','Identificar el problema o la necesidad'],['C','Construir el objeto'],['B','Buscar información e ideas']],
+    hints:['Todo proyecto empieza por saber qué problema hay que resolver y termina comprobando si funciona.','Empieza por I y termina por E. Antes de construir hay que diseñar y planificar.'],
+    extra:{q:'¿En qué fase haces el boceto a mano alzada?', opts:['Construir','Diseñar','Evaluar'], ok:1} },
+  { id:'medidas', kicker:'Candado 5 · Medidas', title:'La caja fuerte de la llave',
+    story:'Último paso: la llave del taller está en una caja fuerte que se abre con tres medidas convertidas. Escribe solo el número en cada casilla.',
+    type:'measures', code:['25','120','45'],
+    labels:['2,5 cm = ? mm','1,2 m = ? cm','450 mm = ? cm'],
+    hints:['1 cm = 10 mm y 1 m = 100 cm.','Para pasar de cm a mm multiplica por 10; de m a cm, por 100; de mm a cm, divide entre 10.'],
+    extra:{q:'¿Cuántos milímetros tiene un metro?', opts:['100','1000','10'], ok:1} }
+];
+
+const stage = document.getElementById('stage');
+function el(h){ const d=document.createElement('div'); d.innerHTML=h.trim(); return d.firstElementChild; }
+function fmtTime(ms){ const m=Math.floor(ms/60000), s=Math.floor(ms/1000)%60; return m+' min '+String(s).padStart(2,'0')+' s'; }
+function stats(){ const t = S.t0 ? fmtTime(Date.now()-S.t0) : '—'; document.getElementById('stats').textContent = S.level ? `Nivel: ${S.level} · Pistas usadas: ${S.hints} · Retos extra: ${S.extras} · Tiempo: ${t}` : ''; }
+setInterval(stats, 1000);
+
+function progress(){
+  const p=document.getElementById('progress'); p.innerHTML='';
+  RETOS.forEach((r,i)=>{ const d=document.createElement('div'); d.className='lock-dot'+(i<S.step?' done':(i===S.step&&S.level?' now':'')); d.textContent=i<S.step?'✓':(i+1); d.title=r.kicker; p.appendChild(d); });
+}
+
+function startScreen(){
+  stage.innerHTML='';
+  stage.appendChild(el(`<section class="station start" aria-labelledby="t0">
+    <div>
+      <div class="kicker">Vuestra misión</div>
+      <h2 id="t0">¡El taller se ha quedado cerrado!</h2>
+      <div class="story">El profesor Tornillo ha salido un momento y la puerta del taller se ha cerrado con la llave dentro. Para recuperarla tenéis que abrir <b>cinco candados</b>. Cada candado esconde un reto sobre seguridad, herramientas, materiales, proceso tecnológico y medidas.</div>
+      <p>Trabajad en equipo y repartid los papeles: <b>lector/a</b> (lee los retos en voz alta), <b>secretario/a</b> (apunta los códigos), <b>comprobador/a</b> (revisa antes de probar el candado) y <b>portavoz</b> (pide las pistas al profe).</p>
+      <p>Usad los botones de arriba si os ayudan: <b>Escuchar</b> lee el reto en voz alta, <b>A−/A+</b> cambia el tamaño del texto y <b>Alto contraste</b> cambia los colores.</p>
+    </div>
+    <div class="levels">
+      <div class="kicker">Elegid vuestro nivel</div>
+      <button class="level" id="lvl1" type="button"><strong>Explorador/a</strong>Las pistas están siempre disponibles. Ideal para la primera partida.</button>
+      <button class="level" id="lvl2" type="button"><strong>Ingeniero/a</strong>Las pistas se desbloquean tras un intento fallido y cada candado tiene un reto extra opcional.</button>
+    </div>
+  </section>`));
+  document.getElementById('lvl1').onclick=()=>begin('Explorador/a');
+  document.getElementById('lvl2').onclick=()=>begin('Ingeniero/a');
+}
+function begin(l){ Object.assign(S,{level:l,step:0,hints:0,fails:0,extras:0,t0:Date.now(),sel:{}}); save(); render(); }
+
+function puzzleHTML(r){
+  if(r.type==='cards') return `<div class="cards">${r.cards.map(([k,t])=>`<button class="card" type="button" aria-pressed="${(S.sel[r.id]||[]).includes(k)}" data-k="${k}"><span class="tag">${k}</span><span>${t}</span></button>`).join('')}</div>`;
+  if(r.type==='match') return `<table class="match"><tbody>${r.tools.map((t,i)=>`<tr><td><b>${t}</b></td><td><select id="m${i}" data-i="${i}" aria-label="Acción para ${t}"><option value="">Elige una acción…</option>${r.actions.map(a=>`<option value="${a[0]}">${a}</option>`).join('')}</select></td></tr>`).join('')}</tbody></table>`;
+  if(r.type==='classify'){ const st=S.sel[r.id]||{}; return `<div class="chips">${r.items.map((it,i)=>`<button class="item" type="button" data-i="${i}" data-cat="${st[i]||''}" aria-label="${it}${st[i]?': '+label(st[i]):''}">${it}${st[i]?' · '+label(st[i]):''}</button>`).join('')}</div><div class="counts" aria-live="polite" id="counts"></div>`; }
+  if(r.type==='phases') return `<div class="phases">${r.phases.map(([k,t])=>`<div class="phase"><b>${k}</b>${t}</div>`).join('')}</div>`;
+  if(r.type==='measures') return `<p>Recuerda: en la regla del taller las marcas pequeñas son milímetros.</p>`;
+}
+function label(c){ return {madera:'madera',metal:'metal',plastico:'plástico'}[c]; }
+
+function lockHTML(r){
+  if(r.type==='measures') return `<div class="row">${r.labels.map((l,i)=>`<label style="flex:1 1 100%" for="ms${i}">${l}</label><input id="ms${i}" type="text" inputmode="decimal" autocomplete="off">`).join('')}</div>`;
+  const len = r.code.length;
+  return `<label for="code">Código de ${len} ${/^\d+$/.test(r.code)?'cifras':'letras'}</label><input id="code" type="text" maxlength="${len}" autocomplete="off" spellcheck="false">`;
+}
+
+function render(){
+  progress(); stats();
+  if(!S.level){ startScreen(); return; }
+  if(S.step>=RETOS.length){ finalScreen(); return; }
+  const r=RETOS[S.step];
+  const hintsAllowed = S.level==='Explorador/a' || S.fails>0;
+  stage.innerHTML='';
+  const sec = el(`<section class="station" aria-labelledby="rt">
+    <div style="min-width:0">
+      <div class="kicker">${r.kicker}</div>
+      <h2 id="rt">${r.title}</h2>
+      <div class="story" id="storytext">${r.story}</div>
+      ${puzzleHTML(r)}
+      ${S.level==='Ingeniero/a'?`<div class="extra"><h4>Reto extra (opcional)</h4><p>${r.extra.q}</p><div class="opts">${r.extra.opts.map((o,i)=>`<button type="button" data-x="${i}">${o}</button>`).join('')}</div><div class="msg" id="xmsg" aria-live="polite"></div></div>`:''}
+    </div>
+    <div class="lockbox">
+      <h3>🔒 Candado ${S.step+1} de ${RETOS.length}</h3>
+      ${lockHTML(r)}
+      <div class="row"><button id="try" type="button">Probar el candado</button><button id="hint" type="button" class="ghost" ${hintsAllowed?'':'disabled'}>Pedir pista</button></div>
+      <div class="msg" id="msg" aria-live="polite"></div>
+      <div id="hints"></div>
+    </div>
+  </section>`);
+  stage.appendChild(sec);
+  wire(r);
+}
+
+function wire(r){
+  if(r.type==='cards') stage.querySelectorAll('.card').forEach(b=>b.onclick=()=>{ const s=new Set(S.sel[r.id]||[]); const k=b.dataset.k; s.has(k)?s.delete(k):s.add(k); S.sel[r.id]=[...s].sort(); b.setAttribute('aria-pressed', s.has(k)); save(); });
+  if(r.type==='classify'){
+    const order=['madera','metal','plastico',''];
+    const upd=()=>{ const st=S.sel[r.id]||{}; const c={madera:0,metal:0,plastico:0}; Object.values(st).forEach(v=>{ if(c[v]!==undefined) c[v]++; }); document.getElementById('counts').innerHTML=`<div>Madera: <b>${c.madera}</b></div><div>Metal: <b>${c.metal}</b></div><div>Plástico: <b>${c.plastico}</b></div>`; };
+    stage.querySelectorAll('.item').forEach(b=>b.onclick=()=>{ const st=S.sel[r.id]||{}; const cur=st[b.dataset.i]||''; const nx=order[(order.indexOf(cur)+1)%order.length]; st[b.dataset.i]=nx; S.sel[r.id]=st; save(); b.dataset.cat=nx; const name=r.items[b.dataset.i]; b.textContent=name+(nx?' · '+label(nx):''); b.setAttribute('aria-label', name+(nx?': '+label(nx):'')); upd(); });
+    upd();
+  }
+  stage.querySelectorAll('[data-x]').forEach(b=>b.onclick=()=>{ const ok = +b.dataset.x===r.extra.ok; const m=document.getElementById('xmsg'); if(ok && !(S.sel['x_'+r.id])){ S.extras++; S.sel['x_'+r.id]=1; save(); }
+    m.textContent = ok ? '¡Correcto! Reto extra superado.' : 'No es esa. Vuelve a intentarlo.'; m.className='msg '+(ok?'okx':''); m.style.color = ok ? 'var(--ok)' : 'var(--bad)'; });
+  document.getElementById('try').onclick=()=>tryLock(r);
+  stage.querySelectorAll('.lockbox input').forEach(i=>i.addEventListener('keydown',e=>{ if(e.key==='Enter') tryLock(r); }));
+  document.getElementById('hint').onclick=()=>{ const h=document.getElementById('hints'); const n=h.children.length; if(n>=r.hints.length) return; h.appendChild(el(`<p class="hint"><b>Pista ${n+1}:</b> ${r.hints[n]}</p>`)); S.hints++; save(); stats(); };
+}
+
+function norm(s){ return (s||'').toString().trim().toUpperCase().replace(/\s+/g,'').replace(',', '.'); }
+function tryLock(r){
+  const msg=document.getElementById('msg');
+  let ok;
+  if(r.type==='measures') ok = r.code.every((c,i)=>norm(document.getElementById('ms'+i).value)===c);
+  else ok = norm(document.getElementById('code').value)===r.code;
+  if(ok){ msg.textContent='¡Clic! El candado se abre.'; msg.className='msg ok'; S.step++; S.fails=0; save(); setTimeout(render, 900); }
+  else { S.fails++; save(); msg.textContent = r.type==='measures' ? 'Alguna medida no es correcta. Revisa las equivalencias.' : 'El candado no se abre. Revisad el reto y comprobad el código.'; msg.className='msg bad';
+    const box=stage.querySelector('.lockbox'); box.classList.remove('shake'); void box.offsetWidth; box.classList.add('shake');
+    const hb=document.getElementById('hint'); if(hb) hb.disabled=false; }
+}
+
+function finalScreen(){
+  const t = fmtTime(Date.now()-S.t0);
+  stage.innerHTML='';
+  stage.appendChild(el(`<section class="station final" aria-labelledby="tf">
+    <div>
+      <div class="key" aria-hidden="true">🔑</div>
+      <div class="kicker">Misión cumplida</div>
+      <h2 id="tf">¡Habéis recuperado la llave del taller!</h2>
+      <p>Tiempo: <b>${t}</b> · Pistas usadas: <b>${S.hints}</b>${S.level==='Ingeniero/a'?` · Retos extra: <b>${S.extras} de 5</b>`:''}</p>
+      <div class="story">Antes de salir, responded en equipo en vuestro cuaderno:<br>1. ¿Qué reto os ha costado más y cómo lo habéis resuelto?<br>2. ¿Qué norma de seguridad no vais a olvidar en el taller?<br>3. ¿Cómo os habéis repartido el trabajo?</div>
+      <p class="meta">Haced una captura de esta pantalla y subidla a la tarea del aula virtual.</p>
+    </div>
+    <div class="lockbox"><h3>¿Otra partida?</h3><p>Probad el nivel ${S.level==='Explorador/a'?'Ingeniero/a, con retos extra':'Explorador/a para ayudar a otro equipo'}.</p><button id="again" type="button">Volver a empezar</button></div>
+  </section>`));
+  document.getElementById('again').onclick=()=>{ S.level=null; save(); render(); };
+}
+
+/* Accessibility tools */
+let fs=1; try{ fs = parseFloat(localStorage.getItem(KEY+'-fs'))||1; }catch(e){}
+function applyFs(){ document.documentElement.style.setProperty('--fs', fs+'rem'); try{ localStorage.setItem(KEY+'-fs', fs); }catch(e){} }
+document.getElementById('bPlus').onclick=()=>{ fs=Math.min(1.5, +(fs+0.1).toFixed(2)); applyFs(); };
+document.getElementById('bMinus').onclick=()=>{ fs=Math.max(0.85, +(fs-0.1).toFixed(2)); applyFs(); };
+document.getElementById('bContrast').onclick=e=>{ const on=document.documentElement.classList.toggle('hc'); e.currentTarget.setAttribute('aria-pressed', on); };
+document.getElementById('bListen').onclick=()=>{
+  try{
+    speechSynthesis.cancel();
+    const main=document.querySelector('.station > div'); if(!main) return;
+    const u=new SpeechSynthesisUtterance(main.innerText.replace(/\s+/g,' ')); u.lang='es-ES'; u.rate=0.95;
+    const v=speechSynthesis.getVoices().find(v=>v.lang && v.lang.startsWith('es')); if(v) u.voice=v;
+    speechSynthesis.speak(u);
+  }catch(e){}
+};
+applyFs(); load(); render();
+</script>
+</body></html>
